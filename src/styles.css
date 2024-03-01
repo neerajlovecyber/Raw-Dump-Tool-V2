@@ -1,0 +1,96 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color: #0f0f0f;
+  background-color: #f6f6f6;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  
+}
+
+
+
+
+h1 {
+  text-align: center;
+}
+
+input,
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  color: #0f0f0f;
+  background-color: #ffffff;
+  transition: border-color 0.25s;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  font-weight: 650;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: #F64668;
+  background-color: #F64668;
+}
+button:active {
+  border-color: #F64668;
+  background-color: #F64668;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f6f6f6;
+    background-color: #41436a;
+  }
+
+  a:hover {
+    color: #24c8db;
+  }
+
+  input,
+  button {
+    color: #ffffff;
+    background-color: #60688f;
+    border-color: #4b4f60;
+  }
+  button:active {
+    background-color: #F64668;
+  }
+}
+
+.sidebar-bottom{
+  
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  overflow: hidden; /* Hide scrollbars */
+  
+}
+
+/* For Firefox */
+body {
+  scrollbar-width: none; /* Hide scrollbar */
+}
+
+/* For Chrome, Safari, and Opera */
+body::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
+

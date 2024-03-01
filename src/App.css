@@ -1,0 +1,17 @@
+
+
+
+
+body {
+  overflow: hidden; /* Hide scrollbars */
+}
+
+/* For Firefox */
+body {
+  scrollbar-width: none; /* Hide scrollbar */
+}
+
+/* For Chrome, Safari, and Opera */
+body::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
