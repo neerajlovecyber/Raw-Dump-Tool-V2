@@ -99,3 +99,11 @@ body::-webkit-scrollbar {
   display: none; /* Hide scrollbar */
 }
 
+.custom-checkbox {
+  border: 1px solid #F64668;
+  font-weight: bold;
+  padding: 5px;
+  padding-right: 15px;
+  border-radius: 5px;
+ 
+}

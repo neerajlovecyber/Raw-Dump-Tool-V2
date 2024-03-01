@@ -1,15 +1,14 @@
-
-
-
-import { Box, Container, VStack, Center, HStack, Button } from '@chakra-ui/react';
+import { Box, Container, VStack, Center, HStack, Button, Checkbox } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { open } from '@tauri-apps/api/dialog';
 import { appDir } from '@tauri-apps/api/path';
 
 function Home() {
   // State to store the selected directory path
   const [selectedDirectory, setSelectedDirectory] = useState('');
+  const [checked, setChecked] = useState(false);
+  const [password, setPassword] = useState('');
 
   // Function to handle the directory selection
   const handleDirectorySelection = async () => {
@@ -32,43 +31,64 @@ function Home() {
     }
   };
 
+  useEffect(() => {
+    console.log("checked:", checked);
+    
+    // Reset password when checkbox is unchecked
+    if (!checked) {
+      setPassword('');
+    }
+  }, [checked]);
+
   return (
     <VStack width={"100%"}>
-             <Container  width="100%" marginBottom={0} paddingBottom={0}>
-          <Box marginTop={10} marginBottom={0} paddingBottom={0}>
+      <Container  width="100%" marginBottom={0} paddingBottom={0}>
+        <Box marginTop={10} marginBottom={0} paddingBottom={0}>
           <Center>
             <img src="src\assets\rdtbig.png" alt="App Icon" style={{ width: "59%", height: "25%" }} />
-            </Center>
-          </Box>
-        </Container>
-        {/* <Container>
-      <p style={{ margin: "auto", marginLeft: "35vh" ,fontWeight:'bold', fontSize:"0.9rem"}}> + By NeerajLoveCyber</p>
-    </Container> */}
-     
-      
-      <Container  width={"80%"}>
-        <p style={{  fontWeight:500}}>This is a Python-based Graphical User Interface (GUI) Memory Dumping Forensics Tool, lovingly crafted by Neeraj Singh. The tool is designed to assist digital forensics investigators in the process of extracting, analyzing, and securing volatile memory (RAM) contents. (have used winpmem and 7z inside it)</p>
+          </Center>
+        </Box>
       </Container>
-      
+      <Container  width={"80%"}>
+        <p style={{ fontWeight: 500 }}>This is a Python-based Graphical User Interface (GUI) Memory Dumping Forensics Tool, lovingly crafted by Neeraj Singh. The tool is designed to assist digital forensics investigators in the process of extracting, analyzing, and securing volatile memory (RAM) contents. (have used winpmem and 7z inside it)</p>
+      </Container>
       <HStack spacing='24px' w="80%">
         <Input 
-          value={selectedDirectory} // Display the selected directory in the input field
+          value={selectedDirectory}
           width="75%"   
           color='#F64668' 
           _placeholder={{ opacity: 1, color: 'inherit' }} 
           placeholder='Select a Folder' 
-          isReadOnly // Make the input field read-only
+          isReadOnly 
         />
         <Button 
           w="170px" 
-          style={{background:"#F64668"}}
-          onClick={handleDirectorySelection} // Call the function on button click
+          style={{ background:"#F64668" }}
+          onClick={handleDirectorySelection}
         >
           Select
         </Button>
       </HStack>
-      
-
+      <HStack spacing='24px' w="80%">
+        <Checkbox
+          className="custom-checkbox"
+          isChecked={checked}
+          onChange={() => setChecked(!checked)}
+          style={{ backgroundColor: checked ? '#F64668' : 'transparent' }}
+        >
+          Encrypt
+        </Checkbox>
+        <Input 
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          width="75%"   
+          color='#F64668' 
+          _placeholder={{ opacity: 1, color: 'inherit' }} 
+          placeholder='Enter the Password' 
+          isDisabled={!checked} // Disable the input when checkbox is unchecked
+          style={{ opacity: checked ? 1 : 0.5 }} // Adjust opacity based on the checked state
+        />
+      </HStack>
     </VStack>
   );
 }
