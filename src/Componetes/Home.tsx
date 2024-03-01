@@ -69,7 +69,7 @@ function Home() {
           Select
         </Button>
       </HStack>
-      <HStack spacing='24px' w="80%">
+      <HStack marginTop="12px" spacing='24px' w="80%">
         <Checkbox
           className="custom-checkbox"
           isChecked={checked}
@@ -81,7 +81,7 @@ function Home() {
         <Input 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          width="75%"   
+          width="84%"   
           color='#F64668' 
           _placeholder={{ opacity: 1, color: 'inherit' }} 
           placeholder='Enter the Password' 
