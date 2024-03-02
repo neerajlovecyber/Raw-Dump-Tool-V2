@@ -4,9 +4,6 @@ import { useEffect, useState } from 'react';
 import { open } from '@tauri-apps/api/dialog';
 import { appDir } from '@tauri-apps/api/path';
 
-// Import your image
-import rdtbigImage from '../assets/rdtbig.png';
-
 function Home() {
   // State to store the selected directory path
   const [selectedDirectory, setSelectedDirectory] = useState('');
@@ -48,8 +45,7 @@ function Home() {
       <Container  width="100%" marginBottom={0} paddingBottom={0}>
         <Box marginTop={10} marginBottom={0} paddingBottom={0}>
           <Center>
-            {/* Use imported image */}
-            <img src={rdtbigImage} alt="App Icon" style={{ width: "59%", height: "25%" }} />
+            <img src="src\assets\rdtbig.png" alt="App Icon" style={{ width: "59%", height: "25%" }} />
           </Center>
         </Box>
       </Container>
