@@ -37,6 +37,15 @@ function NavLinks() {
     // You can perform additional actions here when currentPath changes
   }, [currentPath]);
 
+
+  useEffect(() => {
+    const homeButton = document.getElementById('homeButton');
+    if (homeButton) {
+      homeButton.classList.add('active');
+    }
+  }, []);
+
+
   useEffect(() => {
     const button = document.querySelector(`[href='${currentPath}']`);
     if (button) {
@@ -48,7 +57,7 @@ function NavLinks() {
     <VStack spacing={5} align="flex" className="sidebar-bottom" w={"100%"}>
       <VStack>
         {/* Use onClick handlers for navigation */}
-        <Button w={"100%"} leftIcon={<StarIcon />} variant="ghost" className={currentPath === "/home" ? "active" : ""} onClick={handleHomeClick}>Home</Button>
+        <Button w={"100%"} id="homeButton" leftIcon={<StarIcon />} variant="ghost" className={currentPath === "/home" ? "active" : ""} onClick={handleHomeClick}>Home</Button>
         <Button w={"100%"} leftIcon={<LockIcon />} variant="ghost" className={currentPath === "/security" ? "active" : ""} onClick={handleSecurityClick}>Security</Button>
         <Button w={"100%"} leftIcon={<ChatIcon />} variant="ghost" className={currentPath === "/contact" ? "active" : ""} onClick={handleContactClick}>Contact</Button>
       </VStack>
@@ -78,7 +87,7 @@ function App() {
           <NavLinks />
         </Box>
         {/* Main Content */}
-        <Box flex="1" bg="#41436a" boxSizing="border-box" overflowY="auto">
+        <Box flex="1" bg="#41436a" boxSizing="border-box" overflowY="auto" className="spbutton">
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/info" element={<Info />} />

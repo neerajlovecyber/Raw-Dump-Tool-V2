@@ -3,10 +3,13 @@ import { Input } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { open } from '@tauri-apps/api/dialog';
 import { appDir } from '@tauri-apps/api/path';
-
+import { invoke } from '@tauri-apps/api/tauri';
 // Import your image
 import rdtbigImage from '../assets/rdtbig.png';
 
+const logTerminalOutput = (output) => {
+  console.log(output);
+};
 function Home() {
   // State to store the selected directory path
   const [selectedDirectory, setSelectedDirectory] = useState('');
@@ -74,13 +77,13 @@ function Home() {
         </Button>
       </HStack>
       <HStack marginTop="12px" spacing='24px' w="80%">
-        <Checkbox
+      <Checkbox
           className="custom-checkbox"
           isChecked={checked}
           onChange={() => setChecked(!checked)}
           style={{ backgroundColor: checked ? '#F64668' : 'transparent' }}
         >
-          Encrypt
+          {checked ? 'Encrypted' : 'Encrypt'}
         </Checkbox>
         <Input 
           value={password}
@@ -93,6 +96,22 @@ function Home() {
           style={{ opacity: checked ? 1 : 0.5 }} // Adjust opacity based on the checked state
         />
       </HStack>
+      <Button 
+  w="250px" h="40px" marginTop={39}
+  style={{ background:"#F64668" }}
+  onClick={() => {
+    // Invoke the Rust function to launch the external executable
+    invoke('launch_exe', { 
+      exePath: 'src/assets/winpmem.exe',
+      args: ['dump'] // Add your arguments here
+    })
+    .then((result) => console.log(result))
+    .catch((error) => console.error('Failed to launch exe:', error));
+  }}
+>
+  Dump Memory
+</Button>
+
     </VStack>
   );
 }

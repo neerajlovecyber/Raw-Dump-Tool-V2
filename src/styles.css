@@ -107,3 +107,57 @@ body::-webkit-scrollbar {
   border-radius: 5px;
  
 }
+
+#dom{
+  classlist: "active";
+}
+.spbutton button {
+  --bg:#F64668;
+  --text-color: #fff;
+  position: relative;
+ 
+  border: none;
+  background: var(--bg);
+  color: var(--text-color);
+ 
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: 0.2s;
+  border-radius: 5px;
+  opacity: 0.8;
+  letter-spacing: 1px;
+  box-shadow: #c0392b 0px 5px 2px, #000 0px 6px 5px;
+  
+}
+
+.spbutton button:hover {
+  opacity: 1;
+}
+
+.spbutton button:active {
+  top: 6px;
+  box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+}
+
+
+.titlebar {
+  height: 30px;
+  background: #329ea3;
+  user-select: none;
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.titlebar-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+}
+.titlebar-button:hover {
+  background: #5bbec3;
+}

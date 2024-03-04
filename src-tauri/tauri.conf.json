@@ -14,7 +14,12 @@
       "all": true,
       "shell": {
         "all": false,
-        "open": true
+        "open": true,
+        "sidecar": true,
+        "scope": [
+          { "name": "C:/Users/nirma/Desktop/NeerajRDP/src/assets/src/assets/my-binary", "sidecar": true }
+
+        ]
       },
       "dialog": {
         "all": true, 
@@ -27,11 +32,18 @@
     },
     "windows": [
       {
-        "title": "Raw Dump Tool 6.0",
+        "title": "Raw Dump Tool By NeerajLoveCyber",
         "width": 800,
         "height": 600,
         "minWidth":800,
-        "minHeight":600
+        "minHeight":600,
+        "decorations": true,
+        "closable": true,
+        "resizable": true,
+        "titleBarStyle": "Overlay",
+        "minimizable": true
+
+        
       }
     ],
     "security": {
@@ -50,6 +62,5 @@
         "assets/*"  ,
         "/src/assets/*"
       ]
-    }
   }
-}
+  } }
