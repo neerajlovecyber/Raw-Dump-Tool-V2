@@ -1,4 +1,4 @@
-import { Box, Container, VStack, Center, HStack, Button, Checkbox } from '@chakra-ui/react';
+import { Box, Container, VStack, Center, HStack, Button, Checkbox,Textarea} from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { open } from '@tauri-apps/api/dialog';
@@ -6,11 +6,13 @@ import { appDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api/tauri';
 // Import your image
 import rdtbigImage from '../assets/rdtbig.png';
+import { desktopDir } from '@tauri-apps/api/path';
+const desktopPath = await desktopDir();
 
-const logTerminalOutput = (output) => {
-  console.log(output);
-};
-function Home() {
+const Home = () => {
+  const [output, setOutput] = useState('');
+
+
   // State to store the selected directory path
   const [selectedDirectory, setSelectedDirectory] = useState('');
   const [checked, setChecked] = useState(false);
@@ -97,20 +99,22 @@ function Home() {
         />
       </HStack>
       <Button 
-  w="250px" h="40px" marginTop={39}
+  w="250px" h="40px" marginTop={29}
   style={{ background:"#F64668" }}
   onClick={() => {
     // Invoke the Rust function to launch the external executable
     invoke('launch_exe', { 
       exePath: 'src/assets/winpmem.exe',
-      args: ['dump'] // Add your arguments here
+      args: [desktopPath+"dump","--treads 6"] // Add your arguments here
     })
-    .then((result) => console.log(result))
-    .catch((error) => console.error('Failed to launch exe:', error));
+    .then((result) =>  setOutput(result))
+    .catch((error) => setOutput('Failed to launch exe: ' + error));
   }}
 >
   Dump Memory
 </Button>
+
+<Textarea margin={10} placeholder='Terminal Output'  value={output} readOnly resize={"none"} height={100} maxHeight={"5%"} minW={"80%"} maxWidth={"80%"}  />
 
     </VStack>
   );
