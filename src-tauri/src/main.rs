@@ -10,7 +10,7 @@ fn greet(name: &str) -> String {
 use std::process::{Command, Stdio};
 
 #[tauri::command]
-fn launch_exe(exe_path: String, args: Vec<String>) -> Result<String, String> {
+async fn launch_exe(exe_path: String, args: Vec<String>) -> Result<String, String> {
     // Spawn the process with provided arguments
     let mut command = Command::new(exe_path);
     
