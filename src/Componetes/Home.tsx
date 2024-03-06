@@ -4,21 +4,42 @@ import { useEffect, useState } from 'react';
 import { open } from '@tauri-apps/api/dialog';
 import { appDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api/tauri';
+import { listen } from '@tauri-apps/api/event'; // Import listen API
+import { desktopDir } from '@tauri-apps/api/path';
+
 // Import your image
 import rdtbigImage from '../assets/rdtbig.png';
-import { desktopDir } from '@tauri-apps/api/path';
-const desktopPath = await desktopDir();
 
 const Home = () => {
   const [output, setOutput] = useState('');
-
-
-  // State to store the selected directory path
   const [selectedDirectory, setSelectedDirectory] = useState('');
   const [checked, setChecked] = useState(false);
   const [password, setPassword] = useState('');
 
-  // Function to handle the directory selection
+  const [unlistenStdout, setUnlistenStdout] = useState<(() => void) | null>(null);
+
+useEffect(() => {
+  // Listen for stdout events
+  listen('stdout', (event) => {
+    setOutput((output) => output + '\n' + event.payload);
+  }).then((unlisten) => {
+    setUnlistenStdout(() => unlisten);
+  });
+
+  // Return cleanup function to unsubscribe when component unmounts
+  return () => {
+    if (unlistenStdout) {
+      unlistenStdout();
+    }
+  };
+}, []);
+
+// ...
+
+// Call unlistenStdout when needed
+if (unlistenStdout) {
+  unlistenStdout();
+}
   const handleDirectorySelection = async () => {
     const defaultPath = await appDir();
     const selected = await open({
@@ -28,32 +49,19 @@ const Home = () => {
     });
 
     if (Array.isArray(selected)) {
-      // If multiple directories are selected
       setSelectedDirectory(selected.join(', '));
     } else if (selected === null) {
-      // If the user cancelled the selection
       console.log('User cancelled the selection');
     } else {
-      // If a single directory is selected
       setSelectedDirectory(selected);
     }
   };
-
-  useEffect(() => {
-    console.log("checked:", checked);
-    
-    // Reset password when checkbox is unchecked
-    if (!checked) {
-      setPassword('');
-    }
-  }, [checked]);
 
   return (
     <VStack width={"100%"}>
       <Container  width="100%" marginBottom={0} paddingBottom={0}>
         <Box marginTop={10} marginBottom={0} paddingBottom={0}>
           <Center>
-            {/* Use imported image */}
             <img src={rdtbigImage} alt="App Icon" style={{ width: "59%", height: "25%" }} />
           </Center>
         </Box>
@@ -79,7 +87,7 @@ const Home = () => {
         </Button>
       </HStack>
       <HStack marginTop="12px" spacing='24px' w="80%">
-      <Checkbox
+        <Checkbox
           className="custom-checkbox"
           isChecked={checked}
           onChange={() => setChecked(!checked)}
@@ -94,28 +102,40 @@ const Home = () => {
           color='#F64668' 
           _placeholder={{ opacity: 1, color: 'inherit' }} 
           placeholder='Enter the Password' 
-          isDisabled={!checked} // Disable the input when checkbox is unchecked
-          style={{ opacity: checked ? 1 : 0.5 }} // Adjust opacity based on the checked state
+          isDisabled={!checked}
+          style={{ opacity: checked ? 1 : 0.5 }}
         />
       </HStack>
       <Button 
-  w="250px" h="40px" marginTop={29}
-  style={{ background:"#F64668" }}
-  onClick={() => {
-    // Invoke the Rust function to launch the external executable
-    invoke('launch_exe', { 
-      exePath: 'src/assets/winpmem.exe',
-      args: [desktopPath+"dump","--treads 6"] // Add your arguments here
-    })
-    .then((result) =>  setOutput(result))
-    .catch((error) => setOutput('Failed to launch exe: ' + error));
-  }}
->
-  Dump Memory
-</Button>
+        w="250px" h="40px" marginTop={29}
+        style={{ background:"#F64668" }}
+        onClick={async () => {
+          try {
+            const desktopPath = await desktopDir();
+            // Invoke the Rust function to launch the external executable
+            await invoke('launch_exe', { 
+              exePath: 'src/assets/winpmem.exe',
+              args: [desktopPath+"/dump", "--threads", "6"]
+            });
+          } catch (error) {
+            setOutput('Failed to launch exe: ' + error);
+          }
+        }}
+      >
+        Dump Memory
+      </Button>
 
-<Textarea margin={10} placeholder='Terminal Output'  value={output} readOnly resize={"none"} height={100} maxHeight={"5%"} minW={"80%"} maxWidth={"80%"}  />
-
+      <Textarea 
+        margin={10} 
+        placeholder='Terminal Output'  
+        value={output} 
+        readOnly 
+        resize={"none"} 
+        height={100} 
+        maxHeight={"5%"} 
+        minW={"80%"} 
+        maxWidth={"80%"}  
+      />
     </VStack>
   );
 }
