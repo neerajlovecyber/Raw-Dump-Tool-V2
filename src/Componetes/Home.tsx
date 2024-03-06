@@ -1,6 +1,6 @@
-import { Box, Container, VStack, Center, HStack, Button, Checkbox,Textarea} from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import { Box, Container, VStack, Center, HStack, Button, Checkbox, Textarea } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { open } from '@tauri-apps/api/dialog';
 import { appDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api/tauri';
@@ -10,36 +10,38 @@ import { desktopDir } from '@tauri-apps/api/path';
 // Import your image
 import rdtbigImage from '../assets/rdtbig.png';
 
-const Home = () => {
+function Home() {
   const [output, setOutput] = useState('');
   const [selectedDirectory, setSelectedDirectory] = useState('');
   const [checked, setChecked] = useState(false);
   const [password, setPassword] = useState('');
+  const [isWinpmemExecuting, setIsWinpmemExecuting] = useState(false);
+  const [unlistenStdout, setUnlistenStdout] = useState(null); // Define unlistenStdout state variable
 
-  const [unlistenStdout, setUnlistenStdout] = useState<(() => void) | null>(null);
+  useEffect(() => {
+    // Listen for stdout events
+    const unlistenPromise = listen('stdout', (event) => {
+      setOutput((prevOutput) => prevOutput + '\n' + event.payload); // Accumulate output
+      // Check if "Driver Unloaded" is present in the new output
+      if (event.payload.includes("Driver Unloaded")) {
+        setIsWinpmemExecuting(false);
+      }
+    });
+  
+    // Set the unlisten function when the promise resolves
+    unlistenPromise.then((unlistenFunction) => {
+      setUnlistenStdout(() => unlistenFunction);
+    });
+  
+    // Return a cleanup function to unsubscribe when component unmounts
+    return () => {
+      unlistenPromise.then((unlistenFunction) => {
+        unlistenFunction(); // Call the unlisten function to remove the event listener
+      });
+    };
+  }, []);
+  
 
-useEffect(() => {
-  // Listen for stdout events
-  listen('stdout', (event) => {
-    setOutput((output) => output + '\n' + event.payload);
-  }).then((unlisten) => {
-    setUnlistenStdout(() => unlisten);
-  });
-
-  // Return cleanup function to unsubscribe when component unmounts
-  return () => {
-    if (unlistenStdout) {
-      unlistenStdout();
-    }
-  };
-}, []);
-
-// ...
-
-// Call unlistenStdout when needed
-if (unlistenStdout) {
-  unlistenStdout();
-}
   const handleDirectorySelection = async () => {
     const defaultPath = await appDir();
     const selected = await open({
@@ -57,31 +59,65 @@ if (unlistenStdout) {
     }
   };
 
+  const handleDumpMemory = async () => {
+    setIsWinpmemExecuting(true);
+    try {
+      const desktopPath = await desktopDir();
+      // Invoke the Rust function to launch the external executable
+      await invoke('launch_exe', {
+        exePath: 'src/assets/winpmem.exe',
+        args: [desktopPath + "/dump", "--threads", "6"]
+      });
+    } catch (error) {
+      setOutput('Failed to launch exe: ' + error);
+    } finally {
+      // setIsWinpmemExecuting(false);
+    }
+  };
+
+  // Cleanup event listener when unmounting
+  useEffect(() => {
+    return () => {
+      if (typeof unlistenStdout === 'function') {
+        unlistenStdout();
+      }
+    };
+  }, [unlistenStdout]);
+
+  useEffect(() => {
+    // Set isWinpmemExecuting to false when the output is updated
+    if (output !== '') {
+      setIsWinpmemExecuting(false);
+    }
+  }, [output]);
+
   return (
     <VStack width={"100%"}>
-      <Container  width="100%" marginBottom={0} paddingBottom={0}>
+      <Container width="100%" marginBottom={0} paddingBottom={0}>
         <Box marginTop={10} marginBottom={0} paddingBottom={0}>
           <Center>
             <img src={rdtbigImage} alt="App Icon" style={{ width: "59%", height: "25%" }} />
           </Center>
         </Box>
       </Container>
-      <Container  width={"80%"}>
+      <Container width={"80%"}>
         <p style={{ fontWeight: 500 }}>This is a Python-based Graphical User Interface (GUI) Memory Dumping Forensics Tool, lovingly crafted by Neeraj Singh. The tool is designed to assist digital forensics investigators in the process of extracting, analyzing, and securing volatile memory (RAM) contents. (have used winpmem and 7z inside it)</p>
       </Container>
       <HStack spacing='24px' w="80%">
-        <Input 
+        <Input
           value={selectedDirectory}
-          width="75%"   
-          color='#F64668' 
-          _placeholder={{ opacity: 1, color: 'inherit' }} 
-          placeholder='Select a Folder' 
-          isReadOnly 
+          width="75%"
+          color='#F64668'
+          _placeholder={{ opacity: 1, color: 'inherit' }}
+          placeholder='Select a Folder'
+          isReadOnly
         />
-        <Button 
-          w="170px" 
-          style={{ background:"#F64668" }}
+        <Button
+          w="170px"
+          backgroundColor={isWinpmemExecuting ? 'grey' : '#F64668'} // Change background color based on execution state
           onClick={handleDirectorySelection}
+          disabled={isWinpmemExecuting} // Disable button while winpmem is executing
+          style={{ color: '#FFFFFF', cursor: isWinpmemExecuting ? 'not-allowed' : 'pointer' }} // Set text color and cursor style
         >
           Select
         </Button>
@@ -95,46 +131,37 @@ if (unlistenStdout) {
         >
           {checked ? 'Encrypted' : 'Encrypt'}
         </Checkbox>
-        <Input 
+        <Input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          width="84%"   
-          color='#F64668' 
-          _placeholder={{ opacity: 1, color: 'inherit' }} 
-          placeholder='Enter the Password' 
+          width="84%"
+          color='#F64668'
+          _placeholder={{ opacity: 1, color: 'inherit' }}
+          placeholder='Enter the Password'
           isDisabled={!checked}
           style={{ opacity: checked ? 1 : 0.5 }}
         />
       </HStack>
-      <Button 
+      <Button
         w="250px" h="40px" marginTop={29}
-        style={{ background:"#F64668" }}
-        onClick={async () => {
-          try {
-            const desktopPath = await desktopDir();
-            // Invoke the Rust function to launch the external executable
-            await invoke('launch_exe', { 
-              exePath: 'src/assets/winpmem.exe',
-              args: [desktopPath+"/dump", "--threads", "6"]
-            });
-          } catch (error) {
-            setOutput('Failed to launch exe: ' + error);
-          }
-        }}
+        backgroundColor={isWinpmemExecuting ? 'grey' : '#F64668'} // Change background color based on execution state
+        onClick={handleDumpMemory}
+        disabled={isWinpmemExecuting} // Disable button while winpmem is executing
+        style={{ color: '#FFFFFF', cursor: isWinpmemExecuting ? 'not-allowed' : 'pointer' }} // Set text color and cursor style
       >
-        Dump Memory
+        {isWinpmemExecuting ? 'Dumping' : 'Dump Memory'} {/* Change button text based on execution state */}
       </Button>
 
-      <Textarea 
-        margin={10} 
-        placeholder='Terminal Output'  
-        value={output} 
-        readOnly 
-        resize={"none"} 
-        height={100} 
-        maxHeight={"5%"} 
-        minW={"80%"} 
-        maxWidth={"80%"}  
+      <Textarea
+        margin={10}
+        placeholder='Terminal Output'
+        value={output}
+        readOnly
+        resize={"none"}
+        height={100}
+        maxHeight={"5%"}
+        minW={"80%"}
+        maxWidth={"80%"}
       />
     </VStack>
   );
