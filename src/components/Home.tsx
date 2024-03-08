@@ -6,9 +6,9 @@ import { appDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api/tauri';
 import { listen } from '@tauri-apps/api/event'; // Import listen API
 import { desktopDir } from '@tauri-apps/api/path';
-
 // Import your image
 import rdtbigImage from '../assets/rdtbig.png';
+
 
 function Home() {
   const [output, setOutput] = useState('');
@@ -92,7 +92,7 @@ function Home() {
   }, [output]);
 
   return (
-    <VStack width={"100%"}>
+    <VStack width={"100%"} className='bodyb' height={"100%"}>
       <Container width="100%" marginBottom={0} paddingBottom={0}>
         <Box marginTop={10} marginBottom={0} paddingBottom={0}>
           <Center>
@@ -127,10 +127,13 @@ function Home() {
           className="custom-checkbox"
           isChecked={checked}
           onChange={() => setChecked(!checked)}
-          style={{ backgroundColor: checked ? '#F64668' : 'transparent' }}
+          style={{ backgroundColor: checked ? '#F64668' : 'transparent' 
+        
+    }}
         >
           {checked ? 'Encrypted' : 'Encrypt'}
         </Checkbox>
+        
         <Input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -139,27 +142,27 @@ function Home() {
           _placeholder={{ opacity: 1, color: 'inherit' }}
           placeholder='Enter the Password'
           isDisabled={!checked}
-          style={{ opacity: checked ? 1 : 0.5 }}
+          style={{ opacity: checked ? 1 : 0.5}}
         />
       </HStack>
       <Button
-        w="250px" h="40px" marginTop={29}
-        backgroundColor={isWinpmemExecuting ? 'grey' : '#F64668'} // Change background color based on execution state
+        w="250px" h="40px" marginTop={9}
+        // Change background color based on execution state
         onClick={handleDumpMemory}
         disabled={isWinpmemExecuting} // Disable button while winpmem is executing
-        style={{ color: '#FFFFFF', cursor: isWinpmemExecuting ? 'not-allowed' : 'pointer' }} // Set text color and cursor style
+        style={{ color: '#FFFFFF', cursor: isWinpmemExecuting ? 'not-allowed' : 'hand' }} // Set text color and cursor style
       >
         {isWinpmemExecuting ? 'Dumping' : 'Dump Memory'} {/* Change button text based on execution state */}
       </Button>
 
-      <Textarea
+      <Textarea id='output'
         margin={10}
         placeholder='Terminal Output'
         value={output}
         readOnly
-        resize={"none"}
-        height={100}
-        maxHeight={"5%"}
+        resize={"vertical"}
+        height={80}
+        maxHeight={"19%"}
         minW={"80%"}
         maxWidth={"80%"}
       />
