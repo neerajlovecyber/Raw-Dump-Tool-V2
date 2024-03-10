@@ -39,7 +39,7 @@
         "height": 600,
         "minWidth":800,
         "minHeight":600,
-        "decorations": true,
+        "decorations":false,
         "closable": true,
         "resizable": true,
         "titleBarStyle": "Overlay",

@@ -6,7 +6,6 @@ import { appDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api/tauri';
 import { listen } from '@tauri-apps/api/event'; // Import listen API
 import { desktopDir } from '@tauri-apps/api/path';
-// Import your image
 import rdtbigImage from '../assets/rdtbig.png';
 
 
@@ -93,7 +92,7 @@ function Home() {
 
   return (
     <VStack width={"100%"} className='bodyb' height={"100%"}>
-      <Container width="100%" marginBottom={0} paddingBottom={0}>
+      <Container width="100%" marginBottom={0} paddingBottom={0} paddingTop={"1px"}>
         <Box marginTop={10} marginBottom={0} paddingBottom={0}>
           <Center>
             <img src={rdtbigImage} alt="App Icon" style={{ width: "59%", height: "25%" }} />
@@ -169,5 +168,4 @@ function Home() {
     </VStack>
   );
 }
-
 export default Home;

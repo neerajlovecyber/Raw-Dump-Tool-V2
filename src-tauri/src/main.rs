@@ -2,6 +2,7 @@ use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
 use tauri::Window;
 use std::io::BufRead;
+
 // Define the global variable
 lazy_static! {
     static ref EXECUTING: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
@@ -63,4 +64,5 @@ fn main() {
         .invoke_handler(tauri::generate_handler![greet, launch_exe])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+
 }

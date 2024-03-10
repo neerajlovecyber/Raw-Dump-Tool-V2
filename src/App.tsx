@@ -73,13 +73,13 @@ function App() {
 
   return (
     <BrowserRouter><div className="">
-      <Flex h="100vh" overflow="hidden" borderRadius={"0px"}>
+      <Flex h="95vh" overflow="hidden" borderRadius={"0px"}>
         {/* Sidebar */}
         <Box bg="gray.200" w="20%" padding="10px"  display="flex" flexDirection="column">
           {/* App Logo and Name */}
-          <VStack spacing={5} align="center" marginBottom={30}>
+          <VStack spacing={5} align="center" marginBottom={20}>
             <Box borderRadius="full" overflow="hidden" boxShadow="lg">
-              <img src={rdtimg} alt="App Icon" style={{  width:"100%",height: "100%" }} />
+              <img src={rdtimg} alt="App Icon" style={{  width:"100%",height: "80%",marginTop:"10px" }} />
             </Box>
           </VStack>
           {/* Menu Buttons */}
