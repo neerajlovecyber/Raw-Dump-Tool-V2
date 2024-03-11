@@ -6,6 +6,7 @@ import { appDir } from '@tauri-apps/api/path';
 import { invoke } from '@tauri-apps/api/tauri';
 import { listen } from '@tauri-apps/api/event'; // Import listen API
 import { desktopDir } from '@tauri-apps/api/path';
+// Import your image
 import rdtbigImage from '../assets/rdtbig.png';
 
 
@@ -16,6 +17,16 @@ function Home() {
   const [password, setPassword] = useState('');
   const [isWinpmemExecuting, setIsWinpmemExecuting] = useState(false);
   const [unlistenStdout, setUnlistenStdout] = useState(null); // Define unlistenStdout state variable
+
+
+  useEffect(() => {
+    const setDefaultDirectory = async () => {
+      const defaultDirectory = await desktopDir();
+      setSelectedDirectory(defaultDirectory);
+    };
+    
+    setDefaultDirectory();
+  }, []);
 
   useEffect(() => {
     // Listen for stdout events
@@ -61,11 +72,17 @@ function Home() {
   const handleDumpMemory = async () => {
     setIsWinpmemExecuting(true);
     try {
-      const desktopPath = await desktopDir();
+      let targetPath;
+      if (selectedDirectory) {
+        targetPath = selectedDirectory;
+      } else {
+        targetPath = await desktopDir();
+      }
+    
       // Invoke the Rust function to launch the external executable
       await invoke('launch_exe', {
         exePath: 'src/assets/winpmem.exe',
-        args: [desktopPath + "/dump", "--threads", "6"]
+        args: [targetPath + "/dump", "--threads", "6"]
       });
     } catch (error) {
       setOutput('Failed to launch exe: ' + error);
@@ -92,7 +109,7 @@ function Home() {
 
   return (
     <VStack width={"100%"} className='bodyb' height={"100%"}>
-      <Container width="100%" marginBottom={0} paddingBottom={0} paddingTop={"1px"}>
+      <Container width="100%" marginBottom={0} paddingBottom={0}>
         <Box marginTop={10} marginBottom={0} paddingBottom={0}>
           <Center>
             <img src={rdtbigImage} alt="App Icon" style={{ width: "59%", height: "25%" }} />
@@ -168,4 +185,5 @@ function Home() {
     </VStack>
   );
 }
+
 export default Home;

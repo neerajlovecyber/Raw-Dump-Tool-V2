@@ -1,6 +1,8 @@
 
-import { Box } from "@chakra-ui/react";
 
+import { EvervaultCard } from "./ui/evervault-card";
+import { Box } from "@chakra-ui/react";
+import { FollowerPointerCard } from "./ui/following-pointer";
 
 export function Contact() {
   return (
