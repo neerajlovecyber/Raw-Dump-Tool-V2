@@ -17,6 +17,16 @@ function Home() {
   const [isWinpmemExecuting, setIsWinpmemExecuting] = useState(false);
   const [unlistenStdout, setUnlistenStdout] = useState(null); // Define unlistenStdout state variable
 
+
+  useEffect(() => {
+    const setDefaultDirectory = async () => {
+      const defaultDirectory = await desktopDir();
+      setSelectedDirectory(defaultDirectory);
+    };
+    
+    setDefaultDirectory();
+  }, []);
+
   useEffect(() => {
     // Listen for stdout events
     const unlistenPromise = listen('stdout', (event) => {
@@ -61,11 +71,17 @@ function Home() {
   const handleDumpMemory = async () => {
     setIsWinpmemExecuting(true);
     try {
-      const desktopPath = await desktopDir();
+      let targetPath;
+      if (selectedDirectory) {
+        targetPath = selectedDirectory;
+      } else {
+        targetPath = await desktopDir();
+      }
+    
       // Invoke the Rust function to launch the external executable
       await invoke('launch_exe', {
         exePath: 'src/assets/winpmem.exe',
-        args: [desktopPath + "/dump", "--threads", "6"]
+        args: [targetPath + "/dump", "--threads", "6"]
       });
     } catch (error) {
       setOutput('Failed to launch exe: ' + error);
