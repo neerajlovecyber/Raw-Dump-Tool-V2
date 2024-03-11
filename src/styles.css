@@ -188,7 +188,7 @@ button{font-weight: 900;}
   background-color: var(--color-primary);
   box-shadow: #00000055 0px 1px 1px;
   color: white;
-  background: linear-gradient(90deg, rgba(246,70,104,1) 74%, rgba(250,145,165,1) 100%);
+  background: linear-gradient(90deg, rgb(253, 52, 92) 74%, rgb(253, 124, 148) 100%);
 }
 
 .titlebar-content {
