@@ -90,13 +90,7 @@ function Home() {
         targetPath = await desktopDir();
       }
     
-      let targetPath;
-      if (selectedDirectory) {
-        targetPath = selectedDirectory;
-      } else {
-        targetPath = await desktopDir();
-      }
-    
+ 
       // Invoke the Rust function to launch the external executable
       await invoke('launch_exe', {
         args: [targetPath + "/dump", "--threads", "6"]
