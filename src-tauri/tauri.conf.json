@@ -16,16 +16,7 @@
       },"fs": {
         "scope": ["$RESOURCE/src/assets/winpmem.exe"]
       }
-,
-      "shell": {
-        "all": false,
-        "open": true,
-        "sidecar": true,
-        "scope": [
-          { "name": "C:/Users/nirma/Desktop/NeerajRDP/src/assets/src/assets/my-binary", "sidecar": true }
-
-        ]
-      },
+      ,
       "dialog": {
         "all": true, 
         "ask": true, 
