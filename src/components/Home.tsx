@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Container, VStack, Center, HStack, Button, Checkbox, Textarea } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
 import { open } from '@tauri-apps/api/dialog';
@@ -31,9 +31,10 @@ function Home() {
   useEffect(() => {
     // Listen for stdout events
     const unlistenPromise = listen('stdout', (event) => {
-      setOutput((prevOutput) => prevOutput + '\n' + event.payload); // Accumulate output
+      const payload = event.payload as string; // Type assertion
+      setOutput((prevOutput) => prevOutput + '\n' + payload); // Accumulate output
       // Check if "Driver Unloaded" is present in the new output
-      if (event.payload.includes("Driver Unloaded")) {
+      if (payload.includes("Driver Unloaded")) {
         setIsWinpmemExecuting(false);
       }
     });
@@ -81,7 +82,6 @@ function Home() {
     
       // Invoke the Rust function to launch the external executable
       await invoke('launch_exe', {
-        exePath: 'src/assets/winpmem.exe',
         args: [targetPath + "/dump", "--threads", "6"]
       });
     } catch (error) {
