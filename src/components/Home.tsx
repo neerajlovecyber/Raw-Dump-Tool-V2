@@ -11,32 +11,63 @@ import rdtbigImage from '../assets/rdtbig.png';
 
 
 function Home() {
-  const [output, setOutput] = useState('');
-  const [selectedDirectory, setSelectedDirectory] = useState('');
-  const [checked, setChecked] = useState(false);
-  const [password, setPassword] = useState('');
-  const [isWinpmemExecuting, setIsWinpmemExecuting] = useState(false);
+
   const [unlistenStdout, setUnlistenStdout] = useState(null); // Define unlistenStdout state variable
 
 
+    const [selectedDirectory, setSelectedDirectory] = useState('');
+    const [checked, setChecked] = useState(false);
+    const [password, setPassword] = useState('');
+    const [output, setOutput] = useState('');
+    const [isWinpmemExecuting, setIsWinpmemExecuting] = useState(false);
+  
+    useEffect(() => {
+      const loadDataFromLocalStorage = () => {
+        const storedSelectedDirectory = localStorage.getItem('selectedDirectory');
+        if (storedSelectedDirectory) setSelectedDirectory(storedSelectedDirectory);
+        
+        const storedChecked = localStorage.getItem('ischecked');
+        if (storedChecked) setChecked(JSON.parse(storedChecked));
+        
+        const storedPassword = localStorage.getItem('password');
+        if (storedPassword) setPassword(storedPassword);
+        
+        const storedOutput = localStorage.getItem('output');
+        if (storedOutput) setOutput(storedOutput);
+      };
+  
+      loadDataFromLocalStorage();
+    }, []);
+  
+    useEffect(() => {
+      const storeDataToLocalStorage = () => {
+        localStorage.setItem('selectedDirectory', selectedDirectory);
+        localStorage.setItem('checked', JSON.stringify(checked));
+        localStorage.setItem('password', password);
+        localStorage.setItem('output', output);
+      };
+  
+      storeDataToLocalStorage();
+    }, [selectedDirectory, checked, password, output]);
+
   useEffect(() => {
-    const setDefaultDirectory = async () => {
-      const defaultDirectory = await desktopDir();
-      setSelectedDirectory(defaultDirectory);
-    };
+    // const setDefaultDirectory = async () => {
+    //   const defaultDirectory = await desktopDir();
+    //   setSelectedDirectory(defaultDirectory);
+    // };
     
-    setDefaultDirectory();
+    // setDefaultDirectory();
   }, []);
 
 
-  useEffect(() => {
-    const setDefaultDirectory = async () => {
-      const defaultDirectory = await desktopDir();
-      setSelectedDirectory(defaultDirectory);
-    };
+  // useEffect(() => {
+  //   const setDefaultDirectory = async () => {
+  //     const defaultDirectory = await desktopDir();
+  //     setSelectedDirectory(defaultDirectory);
+  //   };
     
-    setDefaultDirectory();
-  }, []);
+  //   setDefaultDirectory();
+  // }, []);
 
   useEffect(() => {
     // Listen for stdout events

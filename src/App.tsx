@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./components/Home";
 import Info from "./components/Info";
 import Security from "./components/Security";
-import Contact from "./components/Contact";
+
 import rdtimg from '../src/assets/rdt.png';
 function NavLinks() {
   const handleHomeClick = () => {
@@ -20,9 +20,7 @@ function NavLinks() {
     window.location.href = "/security"; // Navigate to the Home route
   };
 
-  const handleContactClick = () => {
-    window.location.href = "/contact"; // Navigate to the Info route
-  };
+ 
 
   const location = useLocation();
   const [currentPath, setCurrentPath] = useState('/home');
@@ -58,7 +56,7 @@ function NavLinks() {
         {/* Use onClick handlers for navigation */}
         <Button w={"100%"} id="homeButton" leftIcon={<StarIcon />} variant="ghost" className={currentPath === "/home" ? "active" : ""} onClick={handleHomeClick}>Home</Button>
         <Button w={"100%"} leftIcon={<LockIcon />} variant="ghost" className={currentPath === "/security" ? "active" : ""} onClick={handleSecurityClick}>Security</Button>
-        <Button w={"100%"} leftIcon={<ChatIcon />} variant="ghost" className={currentPath === "/contact" ? "active" : ""} onClick={handleContactClick}>Contact</Button>
+       
       </VStack>
       <Button w={"100%"} leftIcon={<InfoIcon />} variant="ghost" className={currentPath === "/info" ? "active" : ""} onClick={handleInfoClick}>Info</Button>
     </VStack>
@@ -91,7 +89,7 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/info" element={<Info />} />
             <Route path="/security" element={<Security />} />
-            <Route path="/contact" element={<Contact />} />
+            
             <Route index={true} element={<Home />} />
           </Routes>
         </Box>
