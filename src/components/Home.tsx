@@ -28,6 +28,16 @@ function Home() {
     setDefaultDirectory();
   }, []);
 
+
+  useEffect(() => {
+    const setDefaultDirectory = async () => {
+      const defaultDirectory = await desktopDir();
+      setSelectedDirectory(defaultDirectory);
+    };
+    
+    setDefaultDirectory();
+  }, []);
+
   useEffect(() => {
     // Listen for stdout events
     const unlistenPromise = listen('stdout', (event) => {
@@ -73,6 +83,13 @@ function Home() {
   const handleDumpMemory = async () => {
     setIsWinpmemExecuting(true);
     try {
+      let targetPath;
+      if (selectedDirectory) {
+        targetPath = selectedDirectory;
+      } else {
+        targetPath = await desktopDir();
+      }
+    
       let targetPath;
       if (selectedDirectory) {
         targetPath = selectedDirectory;
