@@ -2,12 +2,11 @@ import { Box, VStack, Button, Flex } from "@chakra-ui/react";
 import { ChatIcon, LockIcon, StarIcon, InfoIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import Home from "./Componetes/Home";
-import Info from "./Componetes/Info";
-import Security from "./Componetes/Security";
-import Contact from "./Componetes/Contact";
+import Home from "./components/Home";
+import Info from "./components/Info";
+import Security from "./components/Security";
+import Contact from "./components/Contact";
 import rdtimg from '../src/assets/rdt.png';
-
 function NavLinks() {
   const handleHomeClick = () => {
     window.location.href = "/home"; // Navigate to the Home route
@@ -54,7 +53,7 @@ function NavLinks() {
   }, []);
 
   return (
-    <VStack spacing={5} align="flex" className="sidebar-bottom" w={"100%"}>
+    <VStack spacing={5} align="flex" className="sidebar-bottom " w={"100%"}>
       <VStack>
         {/* Use onClick handlers for navigation */}
         <Button w={"100%"} id="homeButton" leftIcon={<StarIcon />} variant="ghost" className={currentPath === "/home" ? "active" : ""} onClick={handleHomeClick}>Home</Button>
@@ -73,10 +72,10 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter><div className="">
       <Flex h="100vh" overflow="hidden" borderRadius={"0px"}>
         {/* Sidebar */}
-        <Box bg="gray.200" w="20%" padding="10px" borderRight="5px solid #4a538a" display="flex" flexDirection="column">
+        <Box bg="gray.200" w="20%" padding="10px"  display="flex" flexDirection="column">
           {/* App Logo and Name */}
           <VStack spacing={5} align="center" marginBottom={30}>
             <Box borderRadius="full" overflow="hidden" boxShadow="lg">
@@ -87,7 +86,7 @@ function App() {
           <NavLinks />
         </Box>
         {/* Main Content */}
-        <Box flex="1" bg="#41436a" boxSizing="border-box" overflowY="auto" className="spbutton">
+        <Box flex="1"  boxSizing="border-box" overflowY="auto" className="spbutton">
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/info" element={<Info />} />
@@ -96,7 +95,7 @@ function App() {
             <Route index={true} element={<Home />} />
           </Routes>
         </Box>
-      </Flex>
+      </Flex></div>
     </BrowserRouter>
   );
 }
