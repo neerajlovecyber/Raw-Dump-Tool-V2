@@ -1,5 +1,5 @@
 import { Box, VStack, Button, Flex } from "@chakra-ui/react";
-import { ChatIcon, LockIcon, StarIcon, InfoIcon } from '@chakra-ui/icons';
+import {  LockIcon, StarIcon, InfoIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./components/Home";

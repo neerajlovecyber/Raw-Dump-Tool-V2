@@ -1,8 +1,8 @@
 use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
 use tauri::Window;
-use std::io::BufRead;
-
+use std::process::{Command, Stdio};
+use std::io::{self, BufReader, BufRead};
 
 // Define the global variable
 lazy_static! {
@@ -15,54 +15,54 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn launch_exe(window: Window,handle: tauri::AppHandle, args: Vec<String>) -> Result<(), String> {
-    let target_path = args[0].clone();
-    let thread_count = args[1].clone();
-    // Check if already executing, return early if true
-    if *EXECUTING.lock().unwrap() {
+fn launch_exe(window: Window, handle: tauri::AppHandle, args: Vec<String>) -> Result<(), String> {
+    let target_path = args.get(0).cloned().ok_or("Target path is required")?;
+    let thread_count = args.get(1).cloned().ok_or("Thread count is required")?;
+
+    let mut lock = EXECUTING.lock().unwrap();
+    if *lock {
         return Err("Another process is already executing".to_string());
     }
+    *lock = true; // Set executing status to true
 
-    // Set executing status to true
-    *EXECUTING.lock().unwrap() = true;
+    let exe_path = handle.path_resolver().resolve_resource("src/assets/winpmem.exe")
+        .expect("Failed to resolve resource");
 
-    // Resolve the path to the bundled executable file
-    let exe_path = handle.path_resolver().resolve_resource("src/assets/winpmem.exe").expect("failed to resolve resource");
-
-    // Spawn a new thread to run the external executable
     std::thread::spawn(move || {
-        // Read the file
         let asset = std::fs::read(&exe_path).unwrap();
-
-        // Write the asset to a temporary file
         let mut temp_file = std::env::temp_dir();
         temp_file.push("winpmem.exe");
         std::fs::write(&temp_file, asset).unwrap();
 
-        // Spawn the process with provided arguments
-        let mut command = std::process::Command::new(&temp_file);
-        command.arg(target_path).arg("--threads").arg(thread_count);
-        // Add arguments to the command
-        // NOTE: Add your arguments here if needed
+        let temp_file_str = temp_file.to_str().expect("Failed to convert temp file path to string");
+        let mut command = Command::new("cmd.exe");
+        command.args([
+            "/C", 
+            "cmd.exe", 
+            "/C", 
+            &temp_file_str, 
+            &target_path, 
+            "--threads", 
+            &thread_count
+        ])
+        .stdout(Stdio::piped())  // Capture standard output
+        .stderr(Stdio::piped());  // Capture standard error
 
-        // Capture stdout and stderr
-        command.stdout(std::process::Stdio::piped()).stderr(std::process::Stdio::piped());
-
-        // Execute the command
-        let mut child = command.spawn().map_err(|e| e.to_string()).unwrap();
-
-        // Read stdout asynchronously
-        let stdout = child.stdout.take().unwrap();
-        for line in std::io::BufReader::new(stdout).lines() {
-            let output = line.unwrap();
-            window.emit("stdout", Some(output)).unwrap();
-        }
-
-        // Wait for the process to finish
-        let _ = child.wait();
+        let output = command.output().expect("Failed to execute command");
 
         // Emit signal when execution is finished
-        window.emit::<()>("executionFinished", ()).unwrap(); // Pass `()` as payload
+        window.emit::<()>("executionFinished", ()).unwrap();
+
+        // Convert output to String and emit it
+        let stdout_str = String::from_utf8_lossy(&output.stdout);
+        let stderr_str = String::from_utf8_lossy(&output.stderr);
+        
+        if !stdout_str.is_empty() {
+            window.emit("stdout", stdout_str.into_owned()).unwrap();
+        }
+        if !stderr_str.is_empty() {
+            window.emit("stderr", stderr_str.into_owned()).unwrap();
+        }
 
         // Set executing status to false
         *EXECUTING.lock().unwrap() = false;
@@ -71,11 +71,9 @@ fn launch_exe(window: Window,handle: tauri::AppHandle, args: Vec<String>) -> Res
     Ok(())
 }
 
-
-
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet, launch_exe])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("Error while running tauri application");
 }

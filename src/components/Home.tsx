@@ -9,90 +9,73 @@ import { desktopDir } from '@tauri-apps/api/path';
 // Import your image
 import rdtbigImage from '../assets/rdtbig.png';
 
-
 function Home() {
-
+  const [selectedDirectory, setSelectedDirectory] = useState('');
+  const [checked, setChecked] = useState(false);
+  const [password, setPassword] = useState('');
+  const [output, setOutput] = useState('');
+  const [isWinpmemExecuting, setIsWinpmemExecuting] = useState(false);
   const [unlistenStdout, setUnlistenStdout] = useState(null); // Define unlistenStdout state variable
 
-
-    const [selectedDirectory, setSelectedDirectory] = useState('');
-    const [checked, setChecked] = useState(false);
-    const [password, setPassword] = useState('');
-    const [output, setOutput] = useState('');
-    const [isWinpmemExecuting, setIsWinpmemExecuting] = useState(false);
-  
-    useEffect(() => {
-      const loadDataFromLocalStorage = () => {
-        const storedSelectedDirectory = localStorage.getItem('selectedDirectory');
-        if (storedSelectedDirectory) setSelectedDirectory(storedSelectedDirectory);
-        
-        const storedChecked = localStorage.getItem('ischecked');
-        if (storedChecked) setChecked(JSON.parse(storedChecked));
-        
-        const storedPassword = localStorage.getItem('password');
-        if (storedPassword) setPassword(storedPassword);
-        
-        const storedOutput = localStorage.getItem('output');
-        if (storedOutput) setOutput(storedOutput);
-      };
-  
-      loadDataFromLocalStorage();
-    }, []);
-  
-    useEffect(() => {
-      const storeDataToLocalStorage = () => {
-        localStorage.setItem('selectedDirectory', selectedDirectory);
-        localStorage.setItem('checked', JSON.stringify(checked));
-        localStorage.setItem('password', password);
-        localStorage.setItem('output', output);
-      };
-  
-      storeDataToLocalStorage();
-    }, [selectedDirectory, checked, password, output]);
-
   useEffect(() => {
-    // const setDefaultDirectory = async () => {
-    //   const defaultDirectory = await desktopDir();
-    //   setSelectedDirectory(defaultDirectory);
-    // };
-    
-    // setDefaultDirectory();
+    const loadDataFromLocalStorage = () => {
+      const storedSelectedDirectory = localStorage.getItem('selectedDirectory');
+      if (storedSelectedDirectory) setSelectedDirectory(storedSelectedDirectory);
+      
+      const storedChecked = localStorage.getItem('ischecked');
+      if (storedChecked) setChecked(JSON.parse(storedChecked));
+      
+      const storedPassword = localStorage.getItem('password');
+      if (storedPassword) setPassword(storedPassword);
+
+      const storedIsWinpmemExecuting = localStorage.getItem('isWinpmemExecuting');
+      if (storedIsWinpmemExecuting !== null) { // Check for null to avoid false negatives
+          setIsWinpmemExecuting(JSON.parse(storedIsWinpmemExecuting));
+          console.log("storedIsWinpmemExecuting: ", storedIsWinpmemExecuting);
+      } 
+
+      const storedoutput = localStorage.getItem('output');
+      if (storedoutput) setOutput(storedoutput);
+    };
+
+    loadDataFromLocalStorage();
   }, []);
 
+  useEffect(() => {
+    const storeDataToLocalStorage = () => {
+      localStorage.setItem('selectedDirectory', selectedDirectory);
+      localStorage.setItem('checked', JSON.stringify(checked));
+      localStorage.setItem('password', password);
+      localStorage.setItem('isWinpmemExecuting', JSON.stringify(isWinpmemExecuting));
+localStorage.setItem('output', output);
+    };
 
-  // useEffect(() => {
-  //   const setDefaultDirectory = async () => {
-  //     const defaultDirectory = await desktopDir();
-  //     setSelectedDirectory(defaultDirectory);
-  //   };
-    
-  //   setDefaultDirectory();
-  // }, []);
+
+    storeDataToLocalStorage();
+  }, [selectedDirectory, checked, password,isWinpmemExecuting,output]);
 
   useEffect(() => {
-    // Listen for stdout events
     const unlistenPromise = listen('stdout', (event) => {
       const payload = event.payload as string; // Type assertion
       setOutput((prevOutput) => prevOutput + '\n' + payload); // Accumulate output
       // Check if "Driver Unloaded" is present in the new output
+
       if (payload.includes("Driver Unloaded")) {
         setIsWinpmemExecuting(false);
       }
+
     });
-  
-    // Set the unlisten function when the promise resolves
+
     unlistenPromise.then((unlistenFunction) => {
       setUnlistenStdout(() => unlistenFunction);
     });
-  
-    // Return a cleanup function to unsubscribe when component unmounts
+
     return () => {
       unlistenPromise.then((unlistenFunction) => {
         unlistenFunction(); // Call the unlisten function to remove the event listener
       });
     };
   }, []);
-  
 
   const handleDirectorySelection = async () => {
     const defaultPath = await appDir();
@@ -120,8 +103,8 @@ function Home() {
       } else {
         targetPath = await desktopDir();
       }
-    
- 
+      setIsWinpmemExecuting(true);
+      setOutput("Started dumping memory to " + targetPath + "/dump");
       // Invoke the Rust function to launch the external executable
       await invoke('launch_exe', {
         args: [targetPath + "/dump", "--threads", "6"]
@@ -129,11 +112,10 @@ function Home() {
     } catch (error) {
       setOutput('Failed to launch exe: ' + error);
     } finally {
-      // setIsWinpmemExecuting(false);
+      
     }
   };
 
-  // Cleanup event listener when unmounting
   useEffect(() => {
     return () => {
       if (typeof unlistenStdout === 'function') {
@@ -141,13 +123,6 @@ function Home() {
       }
     };
   }, [unlistenStdout]);
-
-  useEffect(() => {
-    // Set isWinpmemExecuting to false when the output is updated
-    if (output !== '') {
-      setIsWinpmemExecuting(false);
-    }
-  }, [output]);
 
   return (
     <VStack width={"100%"} className='bodyb' height={"100%"}>
@@ -159,7 +134,7 @@ function Home() {
         </Box>
       </Container>
       <Container width={"80%"}>
-        <p style={{ fontWeight: 500 }}>This is a Python-based Graphical User Interface (GUI) Memory Dumping Forensics Tool, lovingly crafted by Neeraj Singh. The tool is designed to assist digital forensics investigators in the process of extracting, analyzing, and securing volatile memory (RAM) contents. (have used winpmem and 7z inside it)</p>
+        <p style={{ fontWeight: 500 }}>This is a Rust & React - based Graphical User Interface (GUI) Memory Dumping Forensics Tool, lovingly crafted by Neeraj Singh. The tool is designed to assist digital forensics investigators in the process of extracting of securing volatile memory (RAM) contents as Dump File. (Based on Winpmem)</p>
       </Container>
       <HStack spacing='24px' w="80%">
         <Input
@@ -175,7 +150,7 @@ function Home() {
           backgroundColor={isWinpmemExecuting ? 'grey' : '#F64668'} // Change background color based on execution state
           onClick={handleDirectorySelection}
           disabled={isWinpmemExecuting} // Disable button while winpmem is executing
-          style={{ color: '#FFFFFF', cursor: isWinpmemExecuting ? 'not-allowed' : 'pointer' }} // Set text color and cursor style
+          style={{ color: '#FFFFFF', cursor: 'pointer' }} // Set text color and cursor style
         >
           Select
         </Button>
@@ -185,9 +160,7 @@ function Home() {
           className="custom-checkbox"
           isChecked={checked}
           onChange={() => setChecked(!checked)}
-          style={{ backgroundColor: checked ? '#F64668' : 'transparent' 
-        
-    }}
+          style={{ backgroundColor: checked ? '#F64668' : 'transparent' }}
         >
           {checked ? 'Encrypted' : 'Encrypt'}
         </Checkbox>
@@ -204,14 +177,14 @@ function Home() {
         />
       </HStack>
       <Button
-        w="250px" h="40px" marginTop={9}
-        // Change background color based on execution state
-        onClick={handleDumpMemory}
-        disabled={isWinpmemExecuting} // Disable button while winpmem is executing
-        style={{ color: '#FFFFFF', cursor: isWinpmemExecuting ? 'not-allowed' : 'hand' }} // Set text color and cursor style
-      >
-        {isWinpmemExecuting ? 'Dumping' : 'Dump Memory'} {/* Change button text based on execution state */}
-      </Button>
+  w="250px" h="40px" marginTop={9}
+  variant={isWinpmemExecuting ? 'disabled' : 'solid'} // Change variant based on execution state
+  onClick={handleDumpMemory}
+  disabled={isWinpmemExecuting} // Disable button while winpmem is executing
+  style={{ color: '#FFFFFF', cursor: 'pointer' }} // Set text color and cursor style
+>
+  {isWinpmemExecuting ? 'Dumping' : 'Dump Memory'} {/* Change button text based on execution state */}
+</Button>
 
       <Textarea id='output'
         margin={10}
