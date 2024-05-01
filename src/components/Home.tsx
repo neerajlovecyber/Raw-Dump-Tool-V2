@@ -34,9 +34,7 @@ function Home() {
           console.log("storedIsWinpmemExecuting: ", storedIsWinpmemExecuting);
       } 
 
-      const storedoutput = localStorage.getItem('output');
-      if (storedoutput) setOutput(storedoutput);
-    };
+
 
     loadDataFromLocalStorage();
   }, []);
@@ -47,12 +45,13 @@ function Home() {
       localStorage.setItem('checked', JSON.stringify(checked));
       localStorage.setItem('password', password);
       localStorage.setItem('isWinpmemExecuting', JSON.stringify(isWinpmemExecuting));
-localStorage.setItem('output', output);
+
+    
     };
 
 
     storeDataToLocalStorage();
-  }, [selectedDirectory, checked, password,isWinpmemExecuting,output]);
+  }, [selectedDirectory, checked, password,isWinpmemExecuting]);
 
   useEffect(() => {
     const unlistenPromise = listen('stdout', (event) => {
