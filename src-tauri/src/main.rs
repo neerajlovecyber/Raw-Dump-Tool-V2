@@ -1,8 +1,9 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use lazy_static::lazy_static;
 use std::sync::{Arc, Mutex};
 use tauri::Window;
 use std::process::{Command, Stdio};
-use std::io::{self, BufReader, BufRead};
+// use std::io::{self, BufReader, BufRead};
 
 // Define the global variable
 lazy_static! {
@@ -35,18 +36,16 @@ fn launch_exe(window: Window, handle: tauri::AppHandle, args: Vec<String>) -> Re
         std::fs::write(&temp_file, asset).unwrap();
 
         let temp_file_str = temp_file.to_str().expect("Failed to convert temp file path to string");
-        let mut command = Command::new("cmd.exe");
+        let mut command = Command::new(&temp_file_str);
         command.args([
-            "/C", 
-            "cmd.exe", 
-            "/C", 
-            &temp_file_str, 
-            &target_path, 
-            "--threads", 
+            &target_path,
+            "--threads",
             &thread_count
         ])
         .stdout(Stdio::piped())  // Capture standard output
         .stderr(Stdio::piped());  // Capture standard error
+        
+     
 
         let output = command.output().expect("Failed to execute command");
 

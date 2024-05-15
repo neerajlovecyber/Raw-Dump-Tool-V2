@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Container, VStack, Center, HStack, Button, Checkbox, Textarea } from '@chakra-ui/react';
+import { Box, Container, VStack, Center, HStack, Button, Textarea } from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
 import { open } from '@tauri-apps/api/dialog';
 import { appDir } from '@tauri-apps/api/path';
@@ -28,13 +28,9 @@ function Home() {
       const storedPassword = localStorage.getItem('password');
       if (storedPassword) setPassword(storedPassword);
 
-      const storedIsWinpmemExecuting = localStorage.getItem('isWinpmemExecuting');
-      if (storedIsWinpmemExecuting !== null) { // Check for null to avoid false negatives
-          setIsWinpmemExecuting(JSON.parse(storedIsWinpmemExecuting));
-          console.log("storedIsWinpmemExecuting: ", storedIsWinpmemExecuting);
-      } 
 
-
+ 
+    }; // Add this closing bracket
 
     loadDataFromLocalStorage();
   }, []);
@@ -44,11 +40,8 @@ function Home() {
       localStorage.setItem('selectedDirectory', selectedDirectory);
       localStorage.setItem('checked', JSON.stringify(checked));
       localStorage.setItem('password', password);
-      localStorage.setItem('isWinpmemExecuting', JSON.stringify(isWinpmemExecuting));
-
     
     };
-
 
     storeDataToLocalStorage();
   }, [selectedDirectory, checked, password,isWinpmemExecuting]);
@@ -155,7 +148,7 @@ function Home() {
         </Button>
       </HStack>
       <HStack marginTop="12px" spacing='24px' w="80%">
-        <Checkbox
+        {/* <Checkbox
           className="custom-checkbox"
           isChecked={checked}
           onChange={() => setChecked(!checked)}
@@ -173,17 +166,17 @@ function Home() {
           placeholder='Enter the Password'
           isDisabled={!checked}
           style={{ opacity: checked ? 1 : 0.5}}
-        />
+        /> */}
       </HStack>
       <Button
-  w="250px" h="40px" marginTop={9}
-  variant={isWinpmemExecuting ? 'disabled' : 'solid'} // Change variant based on execution state
-  onClick={handleDumpMemory}
-  disabled={isWinpmemExecuting} // Disable button while winpmem is executing
-  style={{ color: '#FFFFFF', cursor: 'pointer' }} // Set text color and cursor style
->
-  {isWinpmemExecuting ? 'Dumping' : 'Dump Memory'} {/* Change button text based on execution state */}
-</Button>
+        w="250px" h="40px" marginTop={9}
+        variant={isWinpmemExecuting ? 'disabled' : 'solid'} // Change variant based on execution state
+        onClick={handleDumpMemory}
+        disabled={isWinpmemExecuting} // Disable button while winpmem is executing
+        style={{ color: '#FFFFFF', cursor: 'pointer' }} // Set text color and cursor style
+      >
+        {isWinpmemExecuting ? 'Dumping' : 'Dump Memory'} {/* Change button text based on execution state */}
+      </Button>
 
       <Textarea id='output'
         margin={10}
