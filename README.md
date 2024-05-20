@@ -10,17 +10,15 @@ This is a Rust & React - based Graphical User Interface (GUI) Memory Dumping For
 
 ## How to Use
 
-    (Instructions on how to download/install the tool if it's available on GitHub)
+    (Instructions on how to download/install the tool)
 
-    Download the Exe file from here . 
+1. Download the Exe file from here [Releases](https://github.com/neerajlovecyber/Raw-Dump-Tool-V2/releases)
+2. Install the application and Run as Administrator.
+3. Choose a Location to Dump Files.
+4. Initiate the memory dumping process (Don't Close the winpmem popup it will close automatically once Dumping is Completed) .
 
-    Install the application and Run as Administrator 
-    
-    Chose a Location to Dump Files
-    
-    Initiate the memory dumping process.
+The tool will analyze the memory contents and generate the dump file.
 
-    The tool will analyze the memory contents and generate the dump file.
 
 
 
