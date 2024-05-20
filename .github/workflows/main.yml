@@ -5,56 +5,39 @@ on:
     branches:
       - release
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  build-binaries:
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [windows-latest]
+  publish-tauri:
+    permissions:
+      contents: write
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: lts/*
+          cache: 'npm' # Change this to npm.
 
       - name: install Rust stable
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
 
-      - uses: JonasKruckenberg/tauri-build@v1
-        id: tauri_build
-
-      # The `artifacts` output can now be used by a different action to upload the artifacts
-      - uses: actions/upload-artifact@v3
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
         with:
-          name: artifacts
-          path: "${{ join(fromJSON(steps.tauri_build.outputs.artifacts), '\n') }}"
+          workspaces: './src-tauri -> target'
 
-  publish:
-    needs: build-binaries
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      # Download the previously uploaded artifacts
-      - uses: actions/download-artifact@v3
-        id: download
-        with:
-          name: artifacts
-          path: artifacts
-      # And create a release with the artifacts attached
-      - name: 'create release'
-        uses: softprops/action-gh-release@master
+      - name: install frontend dependencies
+        run: npm install # Changed this to npm.
+
+      - uses: tauri-apps/tauri-action@v0
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          draft: false
-          files: ./artifacts/**/*
+          tagName: app-v__VERSION__ # The action automatically replaces __VERSION__ with the app version.
+          releaseName: 'App v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
