@@ -96,7 +96,7 @@ function Home() {
         targetPath = await desktopDir();
       }
       setIsWinpmemExecuting(true);
-      setOutput("Started dumping memory to " + targetPath + "/dump");
+      setOutput("Started dumping memory to " + targetPath + "/dump.raw");
       // Invoke the Rust function to launch the external executable
       await invoke('launch_exe', {
         args: [targetPath + "/dump", "--threads", "6"]
