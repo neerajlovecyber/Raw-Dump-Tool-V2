@@ -37,7 +37,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: app-v__VERSION__ # The action automatically replaces __VERSION__ with the app version.
-          releaseName: 'App v__VERSION__'
+          releaseName: 'Raw Dump Tool v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
