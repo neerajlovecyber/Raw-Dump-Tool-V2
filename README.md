@@ -3,6 +3,11 @@
 <img src="src-tauri/icons/Square310x310Logo.png " width="150" height="150" />
 This is a Rust & React - based Graphical User Interface (GUI) Memory Dumping Forensics Tool, lovingly crafted by Neeraj Singh. The tool is designed to assist digital forensics investigators in the process of extracting of securing volatile memory (RAM) contents as Dump File With a simple user Friendly Gui. (It is Based on Winpmem https://github.com/Velocidex/WinPmem , So a Big Shoutout to Them)
 
+
+## Preview 
+
+![](screenshot/image.png) 
+
 ## How to Use
 
     (Instructions on how to download/install the tool if it's available on GitHub)
