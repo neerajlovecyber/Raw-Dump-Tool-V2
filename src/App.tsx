@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useEffect } from "react";
 import Home from "./components/Home";
-
+import { ChakraProvider } from '@chakra-ui/react'
 function App() {
   useEffect(() => {
     // Resetting body margin
@@ -14,9 +14,11 @@ function App() {
         {/* Sidebar */}
 
         {/* Main Content */}
-        <Box flex="1" boxSizing="border-box" overflowY="auto" className="spbutton">
+        <Box flex="1" boxSizing="border-box" overflowY="auto" className="spbutton" padding={"0px"}>
           {/* All your components go here */}
+       
           <Home />
+          
           
          
         </Box>
