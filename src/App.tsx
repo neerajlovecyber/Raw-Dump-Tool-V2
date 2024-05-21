@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useEffect } from "react";
 import Home from "./components/Home";
-import { ChakraProvider } from '@chakra-ui/react'
+
 function App() {
   useEffect(() => {
     // Resetting body margin
