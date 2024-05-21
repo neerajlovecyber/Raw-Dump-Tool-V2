@@ -155,7 +155,7 @@ function Home() {
   </div>
 </nav>
       <Container width="100%" marginBottom={0} paddingBottom={0}>
-        <Box marginTop={10} marginBottom={0} paddingBottom={0}>
+        <Box marginTop={6} marginBottom={0} paddingBottom={0}>
           <Center>
             <img src={rdtbigImage} alt="App Icon" style={{ width: "59%", minHeight: "25%"}} />
           </Center>
