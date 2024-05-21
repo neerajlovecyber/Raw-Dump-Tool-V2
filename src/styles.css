@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+:root,.dragon {
   --color-text: #ffffff;
   --color-background: #41436a;
   --color-primary: #F64668;
@@ -11,7 +11,8 @@
  
 }
 
-body {
+.body {
+  height: 100%;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
@@ -69,7 +70,7 @@ button:active {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root,.dragon {
 
   }
 
@@ -95,7 +96,7 @@ button{background-color: var(--color-dark);}
   padding-bottom:30px;
 }
 
-body {
+.body {
   overflow: hidden; /* Hide scrollbars */
 }
 
@@ -137,8 +138,9 @@ body::-webkit-scrollbar {
   box-shadow: #c0392b 0px 5px 2px, #000 0px 6px 5px;
 }
 
-.spbutton button:hover {
+.spbutton button:hover  {
   opacity: 1;
+  background-color: var(--color-primary);
 }
 
 .spbutton button:active {
@@ -190,29 +192,15 @@ button{font-weight: 900;}
   background: linear-gradient(90deg, rgba(246,70,104,1) 74%, rgba(250,145,165,1) 100%);
 }
 
-.titlebar-content {
-  display: flex;
-  align-items: center;
+
+
+
+
+.hover-effect {
+  cursor: pointer;
 }
 
-.Titilbar-title {
-  font-weight: bolder;
-  color: white;
-  padding-top: 2px;
-  padding-left: 15px;
+.hover-effect:hover {
+  cursor: pointer;
+  /* Example hover effect */
 }
-
-.titlebar-buttons {
-  display: flex;
-}
-
-.titlebar-button {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
-  color: white;
-  margin-left: 10px; /* Add margin to separate buttons */
-}
-body{padding-top: 20px;}

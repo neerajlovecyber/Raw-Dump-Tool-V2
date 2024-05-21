@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "Raw Dump Tool",
-    "version": "2.0.1"
+    "version": "2.0.3"
   },
   "tauri": {
     "allowlist": {
@@ -24,6 +24,11 @@
         "message": true, 
         "open": true, 
         "save": true 
+      },"shell": {
+        "all": true, 
+        "execute": true, 
+        "sidecar": true, 
+        "open": true 
       }
     },
     "windows": [
