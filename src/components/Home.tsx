@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Container, VStack, Center, HStack, Button, Textarea, background } from '@chakra-ui/react';
+import { Box, Container, VStack, Center, HStack, Button, Textarea} from '@chakra-ui/react';
 import { Input } from '@chakra-ui/react';
 import { open } from '@tauri-apps/api/dialog';
 import { appDir } from '@tauri-apps/api/path';
