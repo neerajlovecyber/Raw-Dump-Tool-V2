@@ -1,4 +1,4 @@
-# <img src="src-tauri/icons/Square310x310Logo.png " width="30" height="30" /> Raw Dump Tool V2 (Memory Dumping Tool)
+# <img src="src-tauri/icons/Square310x310Logo.png " width="30" height="30" /> Raw Dump Tool V2 (Memory Dumping Tool) [![publish](https://github.com/neerajlovecyber/Raw-Dymp-Tool-V2/actions/workflows/main.yml/badge.svg)](https://github.com/neerajlovecyber/Raw-Dymp-Tool-V2/actions/workflows/main.yml)
 
 <img src="src-tauri/icons/Square310x310Logo.png " width="150" height="150" />
 This is a Rust & React - based Graphical User Interface (GUI) Memory Dumping Forensics Tool, lovingly crafted by Neeraj Singh. The tool is designed to assist digital forensics investigators in the process of extracting of securing volatile memory (RAM) contents as Dump File With a simple user Friendly Gui. (It is Based on Winpmem https://github.com/Velocidex/WinPmem , So a Big Shoutout to Them)
@@ -10,17 +10,15 @@ This is a Rust & React - based Graphical User Interface (GUI) Memory Dumping For
 
 ## How to Use
 
-    (Instructions on how to download/install the tool if it's available on GitHub)
+    (Instructions on how to download/install the tool)
 
-    Download the Exe file from here . 
+1. Download the Exe file from here [Releases](https://github.com/neerajlovecyber/Raw-Dump-Tool-V2/releases)
+2. Install the application and Run as Administrator.
+3. Choose a Location to Dump Files.
+4. Initiate the memory dumping process (Don't Close the winpmem popup it will close automatically once Dumping is Completed) .
 
-    Install the application and Run as Administrator 
-    
-    Chose a Location to Dump Files
-    
-    Initiate the memory dumping process.
+The tool will analyze the memory contents and generate the dump file.
 
-    The tool will analyze the memory contents and generate the dump file.
 
 
 
